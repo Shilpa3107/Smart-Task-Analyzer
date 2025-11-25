@@ -201,7 +201,7 @@ async function simulateApiCall(tasks, strategy) {
         title: task.title,
         due_date: task.dueDate,
         estimated_hours: task.effort * 2, // Convert 1-5 scale to hours estimate
-        importance: task.importance,
+        importance: task.importance, // Now using 1-10 scale directly
         dependencies: task.dependencies || []
     }));
 
@@ -237,7 +237,7 @@ async function simulateApiCall(tasks, strategy) {
             ...task,
             dueDate: task.due_date,
             effort: Math.round(task.estimated_hours / 2), // Convert back to 1-5 scale
-            importance: task.importance,
+            importance: task.importance, // Keep 1-10 scale
             score: task.score,
             explanation: task.explanation
         }));
