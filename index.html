@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Task Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-tasks"></i> Smart Task Analyzer</h1>
+            <p>Optimize your productivity with intelligent task prioritization</p>
+        </header>
+
+        <div class="main-content">
+            <section class="input-section">
+                <h2>Add Tasks</h2>
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="single">Single Task</button>
+                    <button class="tab-button" data-tab="bulk">Bulk Import (JSON)</button>
+                </div>
+
+                <div id="single-task-form" class="tab-content active">
+                    <form id="task-form">
+                        <div class="form-group">
+                            <label for="title">Task Title*</label>
+                            <input type="text" id="title" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="due-date">Due Date*</label>
+                                <input type="date" id="due-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="effort">Effort (1-5)*</label>
+                                <input type="number" id="effort" min="1" max="5" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="importance">Importance (1-5)*</label>
+                                <input type="number" id="importance" min="1" max="5" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description (Optional)</label>
+                            <textarea id="description" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Add Task</button>
+                    </form>
+                </div>
+
+                <div id="bulk-import" class="tab-content">
+                    <div class="form-group">
+                        <label for="json-input">Paste JSON Array of Tasks:</label>
+                        <textarea id="json-input" rows="8" placeholder="[{"title":"Task 1", "dueDate":"2023-12-31", "effort":3, "importance":4}, ...]"></textarea>
+                        <button id="import-json" class="btn">Import Tasks</button>
+                    </div>
+                </div>
+
+                <div class="strategy-selector">
+                    <label for="sort-strategy">Sorting Strategy:</label>
+                    <select id="sort-strategy">
+                        <option value="smart">Smart Balance (Recommended)</option>
+                        <option value="fastest">Fastest Wins</option>
+                        <option value="impact">High Impact</option>
+                        <option value="deadline">Deadline Driven</option>
+                    </select>
+                    <button id="analyze-btn" class="btn primary">
+                        <i class="fas fa-chart-line"></i> Analyze Tasks
+                    </button>
+                </div>
+            </section>
+
+            <section class="output-section">
+                <div class="output-header">
+                    <h2>Prioritized Tasks</h2>
+                    <div id="task-count" class="task-count">0 tasks</div>
+                </div>
+                <div id="task-list" class="task-list">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>Add tasks to get started</p>
+                    </div>
+                </div>
+                <div class="output-actions">
+                    <button id="clear-tasks" class="btn secondary">
+                        <i class="fas fa-trash"></i> Clear All Tasks
+                    </button>
+                    <button id="export-json" class="btn">
+                        <i class="fas fa-file-export"></i> Export as JSON
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Analyzing tasks...</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
