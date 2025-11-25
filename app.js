@@ -194,74 +194,58 @@ async function analyzeTasks() {
     }
 }
 
-// Simulate API call (replace with actual API call)
-function simulateApiCall(tasks, strategy) {
-    return new Promise((resolve) => {
-        // Simulate network delay
-        setTimeout(() => {
-            // Calculate priority score for each task based on the strategy
-            const processedTasks = tasks.map(task => {
-                let score = 0;
-                let explanation = '';
-                
-                const today = new Date();
-                const dueDate = new Date(task.dueDate);
-                const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
-                
-                switch (strategy) {
-                    case 'fastest':
-                        // Lower effort = higher priority
-                        score = (1 / task.effort) * 100;
-                        explanation = `This task was prioritized because it has a low effort level (${task.effort}/5).`;
-                        break;
-                        
-                    case 'impact':
-                        // Higher importance = higher priority
-                        score = task.importance * 20;
-                        explanation = `This task was prioritized because it has high importance (${task.importance}/5).`;
-                        break;
-                        
-                    case 'deadline':
-                        // Sooner due date = higher priority
-                        score = 100 / (daysUntilDue + 1); // +1 to avoid division by zero
-                        explanation = `This task is due in ${daysUntilDue} days.`;
-                        break;
-                        
-                    default: // 'smart' - balanced approach
-                        // Weighted combination of factors
-                        const effortWeight = 0.3;
-                        const importanceWeight = 0.4;
-                        const urgencyWeight = 0.3;
-                        
-                        // Normalize values (higher is better)
-                        const normalizedEffort = (6 - task.effort) / 5; // Invert effort (1-5 to 5-1)
-                        const normalizedImportance = task.importance / 5;
-                        const normalizedUrgency = 1 / (daysUntilDue + 1);
-                        
-                        // Calculate weighted score (0-100)
-                        score = (
-                            (normalizedEffort * effortWeight) +
-                            (normalizedImportance * importanceWeight) +
-                            (normalizedUrgency * urgencyWeight)
-                        ) * 100;
-                        
-                        explanation = `This task was prioritized based on a balanced consideration of effort (${task.effort}/5), ` +
-                                    `importance (${task.importance}/5), and time until deadline (${daysUntilDue} days).`;
-                }
-                
-                // Round to 2 decimal places
-                score = Math.round(score * 100) / 100;
-                
-                return {
-                    ...task,
-                    score,
-                    explanation
-                };
-            });
-            
-            resolve(processedTasks);
-        }, 1000); // Simulate 1 second delay
-    });
+// Make API call to the backend
+async function simulateApiCall(tasks, strategy) {
+    // Map frontend task format to backend format
+    const backendTasks = tasks.map(task => ({
+        title: task.title,
+        due_date: task.dueDate,
+        estimated_hours: task.effort * 2, // Convert 1-5 scale to hours estimate
+        importance: task.importance,
+        dependencies: task.dependencies || []
+    }));
+
+    // Map strategy to weights for the backend
+    const strategyWeights = {
+        'fastest': { effort: 0.7, importance: 0.1, urgency: 0.1, dependencies: 0.1 },
+        'impact': { effort: 0.1, importance: 0.7, urgency: 0.1, dependencies: 0.1 },
+        'deadline': { effort: 0.1, importance: 0.1, urgency: 0.7, dependencies: 0.1 },
+        'smart': { effort: 0.3, importance: 0.4, urgency: 0.2, dependencies: 0.1 }
+    };
+
+    try {
+        const response = await fetch('http://localhost:8000/api/tasks/analyze/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                tasks: backendTasks,
+                weights: strategyWeights[strategy] || strategyWeights['smart']
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Failed to analyze tasks');
+        }
+
+        const data = await response.json();
+        
+        // Map backend response to frontend format
+        return data.tasks.map(task => ({
+            ...task,
+            dueDate: task.due_date,
+            effort: Math.round(task.estimated_hours / 2), // Convert back to 1-5 scale
+            importance: task.importance,
+            score: task.score,
+            explanation: task.explanation
+        }));
+    } catch (error) {
+        console.error('API Error:', error);
+        showAlert(`Error: ${error.message}`, 'error');
+        throw error;
+    }
 }
 
 // Sort tasks based on the selected strategy
