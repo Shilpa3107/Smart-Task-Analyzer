@@ -18,10 +18,10 @@ An intelligent task prioritization system that helps you focus on what matters m
    ``` 
 2. **Create and activate virtual environment**
    
-``bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+  ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+  ```
 3. **Install dependencies**
 
 ```bash
