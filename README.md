@@ -13,7 +13,7 @@ An intelligent task prioritization system that helps you focus on what matters m
 
 1. **Clone the repository**
    ```bash
-   git clone [https://github.com/Shilpa3107/Smart-Task-Analyzer.git](https://github.com/Shilpa3107/Smart-Task-Analyzer.git)
+   git clone https://github.com/Shilpa3107/Smart-Task-Analyzer.git
    cd Smart-Task-Analyzer
    ``` 
 2. **Create and activate virtual environment**
