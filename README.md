@@ -42,21 +42,24 @@ open index.html  # Or manually open index.html in your browser
 
 The prioritization algorithm considers four key factors:
 
-- Urgency (40% weight): Based on due date proximity
+1. Urgency (40% weight): Based on due date proximity
 - Past due: 100%
 - Due today: 90%
 - Next 3 days: 70-80%
 - Next week: 50%
 - Next month: 20-30%
-- Importance (30% weight): User-defined importance (1-10 scale)
+  
+2. Importance (30% weight): User-defined importance (1-10 scale)
 - Scaled linearly from 10-100%
-- Effort (20% weight): Estimated hours to complete
+  
+3. Effort (20% weight): Estimated hours to complete
 - <1 hour: 100%
 - 1-4 hours: 80%
 - 4-8 hours: 60%
 - 8-16 hours: 40%
 - 16 hours: 20%
-- Dependencies (10% weight): Blocking other tasks
+
+4. Dependencies (10% weight): Blocking other tasks
 - Tasks blocking others: +100%
 - Tasks with no dependencies: 0%
   
